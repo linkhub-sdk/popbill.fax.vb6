@@ -165,17 +165,17 @@ Private Function httpGET(url As String, BearerToken As String, Optional UserID A
     End If
     
     
-    winhttp1.Send
+    winhttp1.send
     winhttp1.WaitForResponse
     
-    Dim response As String
-    response = winhttp1.responseText
+    Dim Response As String
+    Response = winhttp1.responseText
        
     Dim parsedDic As Object
     
     If winhttp1.Status <> 200 Then
     
-        Set parsedDic = m_Linkhub.parse(response)
+        Set parsedDic = m_Linkhub.parse(Response)
         
         Err.Raise parsedDic.Item("code"), "POPBILL", parsedDic.Item("message")
         
@@ -185,16 +185,16 @@ Private Function httpGET(url As String, BearerToken As String, Optional UserID A
     
     Set winhttp1 = Nothing
     
-    Set httpGET = m_Linkhub.parse(response)
+    Set httpGET = m_Linkhub.parse(Response)
 
 End Function
 
-Private Function httpPOST(url As String, BearerToken As String, postData As String, Optional UserID As String) As Variant
-    Set httpPOST = httpPOST_override(url, BearerToken, "", postData, UserID)
+Private Function httpPOST(url As String, BearerToken As String, postdata As String, Optional UserID As String) As Variant
+    Set httpPOST = httpPOST_override(url, BearerToken, "", postdata, UserID)
     
 End Function
 
-Private Function httpPOST_override(url As String, BearerToken As String, override As String, postData As String, Optional UserID As String) As Variant
+Private Function httpPOST_override(url As String, BearerToken As String, override As String, postdata As String, Optional UserID As String) As Variant
      
     Dim winhttp1
     
@@ -217,17 +217,17 @@ Private Function httpPOST_override(url As String, BearerToken As String, overrid
     
     Call winhttp1.setRequestHeader("Content-Type", "Application/json")
     
-    winhttp1.Send (postData)
+    winhttp1.send (postdata)
     winhttp1.WaitForResponse
     
-    Dim response As String
-    response = winhttp1.responseText
+    Dim Response As String
+    Response = winhttp1.responseText
        
     Dim parsedDic As Object
     
     If winhttp1.Status <> 200 Then
     
-        Set parsedDic = m_Linkhub.parse(response)
+        Set parsedDic = m_Linkhub.parse(Response)
         
         Err.Raise parsedDic.Item("code"), "POPBILL", IIf(IsNull(parsedDic.Item("message")), "Null Exception", parsedDic.Item("message"))
         
@@ -237,7 +237,7 @@ Private Function httpPOST_override(url As String, BearerToken As String, overrid
     
     Set winhttp1 = Nothing
     
-    Set httpPOST_override = m_Linkhub.parse(response)
+    Set httpPOST_override = m_Linkhub.parse(Response)
 
 End Function
 
@@ -249,7 +249,7 @@ Private Function GetOnlyFileName(ByVal FilePath As String) As String
 
 End Function
 
-Private Function httpPOST_File(url As String, BearerToken As String, postData As String, FilePaths As Collection, Optional UserID As String) As Variant
+Private Function httpPOST_File(url As String, BearerToken As String, postdata As String, FilePaths As Collection, Optional UserID As String) As Variant
      
     Dim winhttp1
     Dim boundary As String
@@ -272,11 +272,11 @@ Private Function httpPOST_File(url As String, BearerToken As String, postData As
     
     Dim applicationform As String
     
-    If postData <> "" Then
+    If postdata <> "" Then
         applicationform = "--" & boundary & vbCrLf & _
                           "Content-Disposition: form-data; name=""form""" & vbCrLf & _
                           "Content-Type: Application/json" & vbCrLf & vbCrLf & _
-                          postData
+                          postdata
     
     End If
     
@@ -360,17 +360,17 @@ Private Function httpPOST_File(url As String, BearerToken As String, postData As
     
     CopyMemory Buffer(formSize + filePartSize), BtTail(0), tailSize
     
-    winhttp1.Send (Buffer)
+    winhttp1.send (Buffer)
     winhttp1.WaitForResponse
     
-    Dim response As String
-    response = winhttp1.responseText
+    Dim Response As String
+    Response = winhttp1.responseText
        
     Dim parsedDic As Object
     
     If winhttp1.Status <> 200 Then
     
-        Set parsedDic = m_Linkhub.parse(response)
+        Set parsedDic = m_Linkhub.parse(Response)
         
         Err.Raise parsedDic.Item("code"), "POPBILL", IIf(IsNull(parsedDic.Item("message")), "Null Exception", parsedDic.Item("message"))
         
@@ -380,7 +380,7 @@ Private Function httpPOST_File(url As String, BearerToken As String, postData As
     
     Set winhttp1 = Nothing
     
-    Set httpPOST_File = m_Linkhub.parse(response)
+    Set httpPOST_File = m_Linkhub.parse(Response)
 
 End Function
 'È¸¿øÀÜ¾×Á¶È¸
@@ -442,7 +442,7 @@ Public Function JoinMember(JoinInfo As PBJoinForm) As PBResponse
 On Error GoTo ErrHandler
     Set JoinMember = Nothing
     
-    Dim postData As String
+    Dim postdata As String
     Dim tmp
     
     Set tmp = CreateObject("Scripting.Dictionary")
@@ -463,11 +463,11 @@ On Error GoTo ErrHandler
     tmp.Add "ID", JoinInfo.ID
     tmp.Add "PWD", JoinInfo.PWD
     
-    postData = m_Linkhub.toString(tmp)
+    postdata = m_Linkhub.toString(tmp)
     
     Dim result As Variant
     
-    Set result = httpPOST("/Join", "", postData)
+    Set result = httpPOST("/Join", "", postdata)
     
     JoinMember = New PBResponse
     
@@ -506,7 +506,7 @@ On Error GoTo ErrHandler
     
     Dim result As Variant
             
-    Dim postData As String
+    Dim postdata As String
     
     Dim Form As Variant
     
@@ -530,9 +530,9 @@ On Error GoTo ErrHandler
     
     Form.Add "rcvs", colRecevers
     
-    postData = m_Linkhub.toString(Form)
+    postdata = m_Linkhub.toString(Form)
     
-    Set result = httpPOST_File("/FAX", getSession_token(CorpNum), postData, FilePaths, UserID)
+    Set result = httpPOST_File("/FAX", getSession_token(CorpNum), postdata, FilePaths, UserID)
     
     SendFAX = result.Item("receiptNum")
     Exit Function
@@ -552,13 +552,13 @@ On Error GoTo ErrHandler
     
     Set GetMessages = New Collection
     
-    Dim t As Variant
+    Dim T As Variant
     Dim sentMsg As PBFaxInfo
     
-    For Each t In result
+    For Each T In result
         Set sentMsg = New PBFaxInfo
         
-        sentMsg.fromDictionary t
+        sentMsg.fromDictionary T
         
         GetMessages.Add sentMsg
     Next
@@ -592,4 +592,20 @@ ErrHandler:
     m_LastErrMessage = Err.Description
     Set CancelReserve = Nothing
 
+End Function
+
+
+'ÆÑ½º °ü·Ã URL
+Public Function GetURL(CorpNum As String, UserID As String, TOGO As String) As String
+On Error GoTo ErrHandler
+    Dim result As Variant
+    
+    Set result = httpGET("/FAX/?TG=" + TOGO, getSession_token(CorpNum), UserID)
+    
+    GetURL = result.Item("url")
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+    GetURL = ""
 End Function
