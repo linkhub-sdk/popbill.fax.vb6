@@ -146,7 +146,7 @@ Private Function getSession_token(CorpNum As String) As String
         refresh = True
     Else
         Dim utcnow As String
-        utcnow = Format(m_Linkhub.UTCTime, "yyyy-MM-ddTHH:mm:ss.sssZ")
+        utcnow = m_Linkhub.GetTime()
         refresh = m_Token.expiration < utcnow
     End If
     
@@ -175,19 +175,19 @@ Private Function httpGET(url As String, BearerToken As String, Optional UserID A
      
     Dim winhttp1
     
-    Set winhttp1 = CreateObject("WinHttp.WinHttpRequest.5.1")
-    Call winhttp1.Open("GET", IIf(m_IsTest, ServiceURL_TEST, ServiceURL_REAL) + url)
+    Set winhttp1 = CreateObject("MSXML2.XMLHTTP.6.0")
+    Call winhttp1.Open("GET", IIf(m_IsTest, ServiceURL_TEST, ServiceURL_REAL) + url, False)
     
     Call winhttp1.setRequestHeader("Authorization", "Bearer " + BearerToken)
     Call winhttp1.setRequestHeader("x-pb-version", APIVersion)
+    Call winhttp1.setRequestHeader("Accept-Encoding", "gzip,deflate")
     
     If UserID <> "" Then
         Call winhttp1.setRequestHeader("x-pb-userid", UserID)
     End If
     
     
-    winhttp1.send
-    winhttp1.WaitForResponse
+    winhttp1.Send
     
     Dim Response As String
     Response = winhttp1.responseText
@@ -219,10 +219,10 @@ Private Function httpPOST_override(url As String, BearerToken As String, overrid
      
     Dim winhttp1
     
-    Set winhttp1 = CreateObject("WinHttp.WinHttpRequest.5.1")
-    Call winhttp1.Open("POST", IIf(m_IsTest, ServiceURL_TEST, ServiceURL_REAL) + url)
+    Set winhttp1 = CreateObject("MSXML2.XMLHTTP.6.0")
+    Call winhttp1.Open("POST", IIf(m_IsTest, ServiceURL_TEST, ServiceURL_REAL) + url, False)
     Call winhttp1.setRequestHeader("x-pb-version", APIVersion)
-    
+    Call winhttp1.setRequestHeader("Accept-Encoding", "gzip,deflate")
     
     If BearerToken <> "" Then
         Call winhttp1.setRequestHeader("Authorization", "Bearer " + BearerToken)
@@ -238,9 +238,8 @@ Private Function httpPOST_override(url As String, BearerToken As String, overrid
     
     Call winhttp1.setRequestHeader("Content-Type", "Application/json")
     
-    winhttp1.send (postdata)
-    winhttp1.WaitForResponse
-    
+    winhttp1.Send (postdata)
+        
     Dim Response As String
     Response = winhttp1.responseText
        
@@ -276,9 +275,10 @@ Private Function httpPOST_File(url As String, BearerToken As String, postdata As
     Dim boundary As String
     boundary = "---------------------popbill"
     
-    Set winhttp1 = CreateObject("WinHttp.WinHttpRequest.5.1")
-    Call winhttp1.Open("POST", IIf(m_IsTest, ServiceURL_TEST, ServiceURL_REAL) + url)
+    Set winhttp1 = CreateObject("MSXML2.XMLHTTP.6.0")
+    Call winhttp1.Open("POST", IIf(m_IsTest, ServiceURL_TEST, ServiceURL_REAL) + url, False)
     Call winhttp1.setRequestHeader("x-pb-version", APIVersion)
+    Call winhttp1.setRequestHeader("Accept-Encoding", "gzip,deflate")
     
     
     If BearerToken <> "" Then
@@ -381,9 +381,8 @@ Private Function httpPOST_File(url As String, BearerToken As String, postdata As
     
     CopyMemory Buffer(formSize + filePartSize), BtTail(0), tailSize
     
-    winhttp1.send (Buffer)
-    winhttp1.WaitForResponse
-    
+    winhttp1.Send (Buffer)
+        
     Dim Response As String
     Response = winhttp1.responseText
        
@@ -404,6 +403,167 @@ Private Function httpPOST_File(url As String, BearerToken As String, postdata As
     Set httpPOST_File = m_Linkhub.parse(Response)
 
 End Function
+'연동회원 아이디 중복 확인
+Public Function CheckID(IDString As String) As PBResponse
+On Error GoTo ErrHandler
+    Dim result As Variant
+    
+    Set result = httpGET("/IDCheck?ID=" + IDString, "")
+    
+    Set CheckID = New PBResponse
+    CheckID.code = result.Item("code")
+    CheckID.message = result.Item("message")
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+    Set CheckID = Nothing
+End Function
+'연동회원 담당자 목록조회
+Public Function ListContact(CorpNum As String, UserID As String) As Collection
+On Error GoTo ErrHandler
+        
+    Dim result As Variant
+       
+    Set result = httpGET("/IDs", getSession_token(CorpNum), UserID)
+    
+    Set ListContact = New Collection
+    
+    Dim T As Variant
+    Dim info As PBContactInfo
+    
+    For Each T In result
+        Set info = New PBContactInfo
+        
+        info.fromDictionary T
+        
+        ListContact.Add info
+    Next
+    
+    Exit Function
+    
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+    Set ListContact = Nothing
+End Function
+'담당자 추가
+Public Function RegistContact(CorpNum As String, ContactInfo As PBContactInfo, UserID As String) As PBResponse
+On Error GoTo ErrHandler
+    Set RegistContact = Nothing
+    
+    Dim postdata As String
+    Dim tmp
+    
+    Set tmp = CreateObject("Scripting.Dictionary")
+    
+    tmp.Add "id", ContactInfo.ID
+    tmp.Add "pwd", ContactInfo.PWD
+    tmp.Add "personName", ContactInfo.personName
+    tmp.Add "tel", ContactInfo.tel
+    tmp.Add "hp", ContactInfo.hp
+    tmp.Add "fax", ContactInfo.fax
+    tmp.Add "email", ContactInfo.email
+    tmp.Add "searchAllAllowYN", ContactInfo.searchAllAllowYN
+    tmp.Add "mgrYN", ContactInfo.mgrYN
+            
+    postdata = m_Linkhub.toString(tmp)
+    
+    Dim result As Variant
+    
+    Set result = httpPOST("/IDs/New", getSession_token(CorpNum), postdata)
+    
+    Set RegistContact = New PBResponse
+    
+    RegistContact.code = result.Item("code")
+    RegistContact.message = result.Item("message")
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+End Function
+'담당자 정보 수정
+Public Function UpdateContact(CorpNum As String, ContactInfo As PBContactInfo, UserID As String) As PBResponse
+On Error GoTo ErrHandler
+    Set UpdateContact = Nothing
+    
+    Dim postdata As String
+    Dim tmp
+    
+    Set tmp = CreateObject("Scripting.Dictionary")
+    
+    tmp.Add "personName", ContactInfo.personName
+    tmp.Add "tel", ContactInfo.tel
+    tmp.Add "hp", ContactInfo.hp
+    tmp.Add "fax", ContactInfo.fax
+    tmp.Add "email", ContactInfo.email
+    tmp.Add "searchAllAllowYN", ContactInfo.searchAllAllowYN
+    tmp.Add "mgrYN", ContactInfo.mgrYN
+            
+    postdata = m_Linkhub.toString(tmp)
+    
+    Dim result As Variant
+    
+    Set result = httpPOST("/IDs", getSession_token(CorpNum), postdata, UserID)
+    
+    Set UpdateContact = New PBResponse
+    
+    UpdateContact.code = result.Item("code")
+    UpdateContact.message = result.Item("message")
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+End Function
+'회사정보 수정
+Public Function UpdateCorpInfo(CorpNum As String, CorpInfo As PBCorpInfo, UserID As String) As PBResponse
+On Error GoTo ErrHandler
+    Set UpdateCorpInfo = Nothing
+    
+    Dim postdata As String
+    Dim tmp
+    
+    Set tmp = CreateObject("Scripting.Dictionary")
+    
+    tmp.Add "ceoname", CorpInfo.CEOName
+    tmp.Add "corpName", CorpInfo.CorpName
+    tmp.Add "addr", CorpInfo.Addr
+    tmp.Add "bizType", CorpInfo.BizType
+    tmp.Add "bizClass", CorpInfo.BizClass
+            
+    postdata = m_Linkhub.toString(tmp)
+    
+    Dim result As Variant
+    
+    Set result = httpPOST("/CorpInfo", getSession_token(CorpNum), postdata, UserID)
+    
+    Set UpdateCorpInfo = New PBResponse
+    
+    UpdateCorpInfo.code = result.Item("code")
+    UpdateCorpInfo.message = result.Item("message")
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+End Function
+'회사정보 조회
+Public Function GetCorpInfo(CorpNum As String, UserID As String) As PBCorpInfo
+On Error GoTo ErrHandler
+    Dim result As Variant
+       
+    Set result = httpGET("/CorpInfo", getSession_token(CorpNum), UserID)
+    
+    Set GetCorpInfo = New PBCorpInfo
+        
+    GetCorpInfo.fromDictionary result
+    Exit Function
+    
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+    Set GetCorpInfo = Nothing
+End Function
+
 '회원잔액조회
 Public Function GetBalance(CorpNum As String) As Double
     On Error GoTo ErrHandler
