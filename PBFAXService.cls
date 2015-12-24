@@ -790,3 +790,52 @@ ErrHandler:
     m_LastErrMessage = Err.Description
     GetURL = ""
 End Function
+
+'팩스전송내역 목록조회
+Public Function Search(CorpNum As String, SDate As String, EDate As String, State As Collection, ReserveYN As Boolean, SenderOnly As Boolean, Page As Integer, PerPage As Integer) As PBFaxSearchList
+On Error GoTo ErrHandler
+    Dim result As Variant
+    Dim uri As String
+    Dim i As Integer
+    
+    uri = "/FAX/Search"
+    uri = uri + "?SDate=" + SDate
+    uri = uri + "&EDate=" + EDate
+    
+    If State.Count > 0 Then
+        uri = uri + "&State="
+        For i = 1 To State.Count
+            If i = State.Count Then
+                uri = uri + State(i)
+            Else
+                uri = uri + State(i) + ","
+            End If
+        Next
+    End If
+    
+    If ReserveYN Then
+        uri = uri + "&ReserveYN=1"
+    End If
+    
+    If SenderOnly Then
+        uri = uri + "&SenderOnly=1"
+    End If
+    
+    uri = uri + "&Page=" + CStr(Page)
+    uri = uri + "&PerPage=" + CStr(PerPage)
+    
+    Set result = httpGET(uri, getSession_token(CorpNum), "")
+    
+    Set Search = New PBFaxSearchList
+    
+    Search.fromDictionary result
+    
+    
+    Exit Function
+    
+    
+ErrHandler:
+    m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
+    Set Search = Nothing
+End Function
