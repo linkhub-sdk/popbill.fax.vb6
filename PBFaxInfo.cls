@@ -25,10 +25,12 @@ Public failPageCnt As Integer
 Public refundPageCnt As Integer
 Public cancelPageCnt As Integer
 Public reserveDT As String
+Public receiptDT As String
 Public sendDT As String
 Public resultDT As String
 Public sendResult As Integer
 Public fileNames As Collection
+
 
 Public Sub fromDictionary(dic As Variant)
     sendState = dic.Item("sendState")
@@ -44,6 +46,7 @@ Public Sub fromDictionary(dic As Variant)
     reserveDT = dic.Item("reserveDT")
     sendDT = dic.Item("sendDT")
     resultDT = dic.Item("resultDT")
+    receiptDT = dic.Item("receiptDT")
     sendResult = dic.Item("sendResult")
     
     Dim tCollection As Collection

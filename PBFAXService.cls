@@ -792,7 +792,7 @@ ErrHandler:
 End Function
 
 '팩스전송내역 목록조회
-Public Function Search(CorpNum As String, SDate As String, EDate As String, State As Collection, ReserveYN As Boolean, SenderOnly As Boolean, Page As Integer, PerPage As Integer) As PBFaxSearchList
+Public Function Search(CorpNum As String, SDate As String, EDate As String, State As Collection, ReserveYN As Boolean, SenderOnly As Boolean, Page As Integer, PerPage As Integer, Order As String) As PBFaxSearchList
 On Error GoTo ErrHandler
     Dim result As Variant
     Dim uri As String
@@ -823,6 +823,7 @@ On Error GoTo ErrHandler
     
     uri = uri + "&Page=" + CStr(Page)
     uri = uri + "&PerPage=" + CStr(PerPage)
+    uri = uri + "&Order=" + Order
     
     Set result = httpGET(uri, getSession_token(CorpNum), "")
     
