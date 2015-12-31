@@ -21,9 +21,7 @@ Public pageNum       As Integer
 Public pageCount     As Integer
 Public message       As String
 
-
 Public list As Collection
-
 
 Public Sub fromDictionary(dic As Variant)
 
@@ -51,7 +49,6 @@ Public Sub fromDictionary(dic As Variant)
             
             list.Add searchList
         Next
-        
     End If
 End Sub
 

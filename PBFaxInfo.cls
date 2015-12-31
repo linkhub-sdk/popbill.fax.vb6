@@ -28,9 +28,9 @@ Public reserveDT As String
 Public sendDT As String
 Public resultDT As String
 Public sendResult As Integer
+Public fileNames As Collection
 
 Public Sub fromDictionary(dic As Variant)
-
     sendState = dic.Item("sendState")
     convState = dic.Item("convState")
     sendNum = dic.Item("sendNum")
@@ -45,5 +45,18 @@ Public Sub fromDictionary(dic As Variant)
     sendDT = dic.Item("sendDT")
     resultDT = dic.Item("resultDT")
     sendResult = dic.Item("sendResult")
-  
+    
+    Dim tCollection As Collection
+    
+    Set tCollection = dic.Item("fileNames")
+    
+    If (tCollection Is Nothing) = False Then
+        Set fileNames = New Collection
+        Dim T As Variant
+                
+        For Each T In tCollection
+            fileNames.Add T
+        Next
+    End If
 End Sub
+
