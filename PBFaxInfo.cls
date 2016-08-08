@@ -17,6 +17,7 @@ Option Explicit
 Public sendState As Integer
 Public convState As Integer
 Public sendNum As String
+Public senderName As String
 Public receiveNum As String
 Public receiveName As String
 Public sendPageCnt As Integer
@@ -36,6 +37,7 @@ Public Sub fromDictionary(dic As Variant)
     sendState = dic.Item("sendState")
     convState = dic.Item("convState")
     sendNum = dic.Item("sendNum")
+    senderName = dic.Item("senderName")
     receiveNum = dic.Item("receiveNum")
     receiveName = dic.Item("receiveName")
     sendPageCnt = dic.Item("sendPageCnt")
