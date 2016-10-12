@@ -698,7 +698,7 @@ ErrHandler:
 End Function
 
 ''팩스 전송
-Public Function SendFAX(CorpNum As String, sendNum As String, receivers As Collection, FilePaths As Collection, Optional reserveDT As String, Optional UserID As String, Optional SenderName As String) As String
+Public Function SendFAX(CorpNum As String, sendNum As String, receivers As Collection, FilePaths As Collection, Optional reserveDT As String, Optional UserID As String, Optional senderName As String) As String
 On Error GoTo ErrHandler
     
     If receivers Is Nothing Or receivers.Count = 0 Then Err.Raise -99999999, "POPBILL", "수신자정보 가 입력되지 않았습니다."
@@ -715,7 +715,7 @@ On Error GoTo ErrHandler
     
     Form.Add "snd", sendNum
     
-    If SenderName <> "" Then Form.Add "sndnm", SenderName
+    If senderName <> "" Then Form.Add "sndnm", senderName
     If reserveDT <> "" Then Form.Add "sndDT", reserveDT
     
     Form.Add "fCnt", FilePaths.Count
@@ -737,6 +737,7 @@ On Error GoTo ErrHandler
     Exit Function
 ErrHandler:
     m_LastErrCode = Err.Number
+    m_LastErrMessage = Err.Description
     SendFAX = ""
 End Function
 '전송내역 확인
