@@ -761,7 +761,7 @@ On Error GoTo ErrHandler
     If reserveDT <> "" Then Form.Add "sndDT", reserveDT
     
     '수신정보 배열이 존재하는 경우
-    If IsNothing(receivers) Then
+    If Not receivers Is Nothing Then
         For Each receiver In receivers
             colRecevers.Add receiver.toDictionary
         Next
