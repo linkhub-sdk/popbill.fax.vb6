@@ -24,7 +24,7 @@ Option Explicit
 ' Author : Kim Seongjun (pallet027@gmail.com)
 ' Written : 2014-04-22
 ' Contributor : Jeong Yohan (code@linkhub.co.kr)
-' Updated : 2016-08-23
+' Updated : 2017-02-23
 '
 ' Thanks for your interest.
 '=================================================================================
@@ -422,7 +422,7 @@ ErrHandler:
     Set CheckID = Nothing
 End Function
 '연동회원 담당자 목록조회
-Public Function ListContact(CorpNum As String, UserID As String) As Collection
+Public Function ListContact(CorpNum As String, Optional UserID As String = "") As Collection
 On Error GoTo ErrHandler
         
     Dim result As Variant
@@ -450,7 +450,7 @@ ErrHandler:
     Set ListContact = Nothing
 End Function
 '담당자 추가
-Public Function RegistContact(CorpNum As String, ContactInfo As PBContactInfo, UserID As String) As PBResponse
+Public Function RegistContact(CorpNum As String, ContactInfo As PBContactInfo, Optional UserID As String = "") As PBResponse
 On Error GoTo ErrHandler
     Set RegistContact = Nothing
     
@@ -518,7 +518,7 @@ ErrHandler:
     m_LastErrMessage = Err.Description
 End Function
 '회사정보 수정
-Public Function UpdateCorpInfo(CorpNum As String, CorpInfo As PBCorpInfo, UserID As String) As PBResponse
+Public Function UpdateCorpInfo(CorpNum As String, CorpInfo As PBCorpInfo, Optional UserID As String = "") As PBResponse
 On Error GoTo ErrHandler
     Set UpdateCorpInfo = Nothing
     
@@ -549,7 +549,7 @@ ErrHandler:
     m_LastErrMessage = Err.Description
 End Function
 '회사정보 조회
-Public Function GetCorpInfo(CorpNum As String, UserID As String) As PBCorpInfo
+Public Function GetCorpInfo(CorpNum As String, Optional UserID As String = "") As PBCorpInfo
 On Error GoTo ErrHandler
     Dim result As Variant
        
@@ -662,7 +662,7 @@ ErrHandler:
     m_LastErrMessage = Err.Description
 End Function
 '과금정보 조회
-Public Function GetChargeInfo(CorpNum As String, Optional UserID As String) As PBChargeInfo
+Public Function GetChargeInfo(CorpNum As String, Optional UserID As String = "") As PBChargeInfo
 On Error GoTo ErrHandler
     Dim result As Variant
        
@@ -742,7 +742,7 @@ ErrHandler:
 End Function
 
 '팩스 재전송
-Public Function ResendFAX(CorpNum As String, receiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String) As String
+Public Function ResendFAX(CorpNum As String, receiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "") As String
 On Error GoTo ErrHandler
     If receiptNum = "" Then Err.Raise -99999999, "POPBILL", "팩스접수번호(receiptNum)가 입력되지 않았습니다."
     
@@ -781,7 +781,7 @@ ErrHandler:
 End Function
 
 '전송내역 확인
-Public Function GetMessages(CorpNum As String, receiptNum As String, Optional UserID As String) As Collection
+Public Function GetMessages(CorpNum As String, receiptNum As String, Optional UserID As String = "") As Collection
 On Error GoTo ErrHandler
     Dim result As Variant
     If receiptNum = "" Then
@@ -813,7 +813,7 @@ End Function
 
 
 '예약전송 취소
-Public Function CancelReserve(CorpNum As String, receiptNum As String, Optional UserID As String) As PBResponse
+Public Function CancelReserve(CorpNum As String, receiptNum As String, Optional UserID As String = "") As PBResponse
 On Error GoTo ErrHandler
     Dim result As Variant
     If receiptNum = "" Then
