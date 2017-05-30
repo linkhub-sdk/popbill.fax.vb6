@@ -24,7 +24,7 @@ Option Explicit
 ' Author : Kim Seongjun (pallet027@gmail.com)
 ' Written : 2014-04-22
 ' Contributor : Jeong Yohan (code@linkhub.co.kr)
-' Updated : 2017-05-24
+' Updated : 2017-05-30
 '
 ' Thanks for your interest.
 '=================================================================================
@@ -417,7 +417,7 @@ On Error GoTo ErrHandler
     CheckID.message = result.Item("message")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set CheckID = Nothing
 End Function
@@ -445,7 +445,7 @@ On Error GoTo ErrHandler
     Exit Function
     
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set ListContact = Nothing
 End Function
@@ -481,7 +481,7 @@ On Error GoTo ErrHandler
     RegistContact.message = result.Item("message")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
 End Function
 '담당자 정보 수정
@@ -515,7 +515,7 @@ On Error GoTo ErrHandler
     UpdateContact.message = result.Item("message")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
 End Function
 '회사정보 수정
@@ -546,7 +546,7 @@ On Error GoTo ErrHandler
     UpdateCorpInfo.message = result.Item("message")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
 End Function
 '회사정보 조회
@@ -562,7 +562,7 @@ On Error GoTo ErrHandler
     Exit Function
     
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set GetCorpInfo = Nothing
 End Function
@@ -575,7 +575,7 @@ Public Function GetBalance(CorpNum As String) As Double
     
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     GetBalance = m_LastErrCode
 End Function
@@ -587,7 +587,7 @@ Public Function GetPartnerBalance(CorpNum As String) As Double
     
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     GetPartnerBalance = m_LastErrCode
 End Function
@@ -601,7 +601,7 @@ On Error GoTo ErrHandler
     GetPopbillURL = result.Item("url")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     GetPopbillURL = ""
 End Function
@@ -617,7 +617,7 @@ On Error GoTo ErrHandler
     CheckIsMember.message = result.Item("message")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set CheckIsMember = Nothing
 End Function
@@ -659,7 +659,7 @@ On Error GoTo ErrHandler
     JoinMember.message = result.Item("message")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
 End Function
 '과금정보 조회
@@ -675,7 +675,7 @@ On Error GoTo ErrHandler
     Exit Function
     
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set GetChargeInfo = Nothing
 End Function
@@ -692,7 +692,7 @@ On Error GoTo ErrHandler
     GetUnitCost = result.Item("unitCost")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     GetUnitCost = m_LastErrCode
 
@@ -737,7 +737,7 @@ On Error GoTo ErrHandler
     SendFAX = result.Item("receiptNum")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     SendFAX = ""
 End Function
@@ -776,7 +776,7 @@ On Error GoTo ErrHandler
     ResendFAX = result.Item("receiptNum")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     ResendFAX = ""
 End Function
@@ -806,7 +806,7 @@ On Error GoTo ErrHandler
     
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set GetMessages = Nothing
 
@@ -829,7 +829,7 @@ On Error GoTo ErrHandler
     
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set CancelReserve = Nothing
 
@@ -846,13 +846,13 @@ On Error GoTo ErrHandler
     GetURL = result.Item("url")
     Exit Function
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     GetURL = ""
 End Function
 
 '팩스전송내역 목록조회
-Public Function Search(CorpNum As String, SDate As String, EDate As String, State As Collection, ReserveYN As Boolean, SenderOnly As Boolean, Page As Integer, PerPage As Integer, Order As String) As PBFaxSearchList
+Public Function Search(CorpNum As String, SDate As String, EDate As String, state As Collection, ReserveYN As Boolean, SenderOnly As Boolean, Page As Integer, PerPage As Integer, Order As String) As PBFaxSearchList
 On Error GoTo ErrHandler
     Dim result As Variant
     Dim uri As String
@@ -862,13 +862,13 @@ On Error GoTo ErrHandler
     uri = uri + "?SDate=" + SDate
     uri = uri + "&EDate=" + EDate
     
-    If State.Count > 0 Then
+    If state.Count > 0 Then
         uri = uri + "&State="
-        For i = 1 To State.Count
-            If i = State.Count Then
-                uri = uri + State(i)
+        For i = 1 To state.Count
+            If i = state.Count Then
+                uri = uri + state(i)
             Else
-                uri = uri + State(i) + ","
+                uri = uri + state(i) + ","
             End If
         Next
     End If
@@ -896,7 +896,34 @@ On Error GoTo ErrHandler
     
     
 ErrHandler:
-    m_LastErrCode = Err.Number
+    m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     Set Search = Nothing
+End Function
+
+' 팩스발신번호 목록 조회
+Public Function GetSenderNumberList(CorpNum As String, Optional UserID As String = "") As Collection
+On Error GoTo ErrHandler
+
+    Dim result As Variant
+    
+    Set result = httpGET("/FAX/SenderNumber", getSession_token(CorpNum), UserID)
+    
+    Set GetSenderNumberList = New Collection
+    
+    Dim T As Variant
+    Dim info As PBFaxSenderNumber
+    
+    For Each T In result
+        Set info = New PBFaxSenderNumber
+        info.fromDictionary T
+        GetSenderNumberList.Add info
+    Next
+    
+    Exit Function
+   
+ErrHandler:
+    m_LastErrCode = Err.number
+    m_LastErrMessage = Err.Description
+    Set GetSenderNumberList = Nothing
 End Function
