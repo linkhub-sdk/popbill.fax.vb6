@@ -14,6 +14,11 @@ Attribute VB_Exposed = False
 Option Explicit
 
 
+'2017/07/20 added state, title, result
+Public state As Integer
+Public result As Integer
+Public title As String
+
 Public sendState As Integer
 Public convState As Integer
 Public sendNum As String
@@ -34,6 +39,10 @@ Public fileNames As Collection
 
 
 Public Sub fromDictionary(dic As Variant)
+    state = dic.Item("state")
+    result = dic.Item("result")
+    title = dic.Item("title")
+
     sendState = dic.Item("sendState")
     convState = dic.Item("convState")
     sendNum = dic.Item("sendNum")

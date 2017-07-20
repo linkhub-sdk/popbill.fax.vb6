@@ -24,7 +24,7 @@ Option Explicit
 ' Author : Kim Seongjun (pallet027@gmail.com)
 ' Written : 2014-04-22
 ' Contributor : Jeong Yohan (code@linkhub.co.kr)
-' Updated : 2017-06-05
+' Updated : 2017-07-20
 '
 ' Thanks for your interest.
 '=================================================================================
@@ -699,7 +699,7 @@ ErrHandler:
 End Function
 
 ''팩스 전송
-Public Function SendFAX(CorpNum As String, sendNum As String, receivers As Collection, FilePaths As Collection, Optional reserveDT As String, Optional UserID As String, Optional senderName As String, Optional adsYN As Boolean = False) As String
+Public Function SendFAX(CorpNum As String, sendNum As String, receivers As Collection, FilePaths As Collection, Optional reserveDT As String, Optional UserID As String, Optional senderName As String, Optional adsYN As Boolean = False, Optional title As String = "") As String
 On Error GoTo ErrHandler
     
     If receivers Is Nothing Or receivers.Count = 0 Then Err.Raise -99999999, "POPBILL", "수신자정보 가 입력되지 않았습니다."
@@ -720,6 +720,8 @@ On Error GoTo ErrHandler
     
     If senderName <> "" Then Form.Add "sndnm", senderName
     If reserveDT <> "" Then Form.Add "sndDT", reserveDT
+    
+    If title <> "" Then Form.Add "title", title
     
     
     Form.Add "fCnt", FilePaths.Count
@@ -746,7 +748,7 @@ ErrHandler:
 End Function
 
 '팩스 재전송
-Public Function ResendFAX(CorpNum As String, receiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "") As String
+Public Function ResendFAX(CorpNum As String, receiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "", Optional title As String = "") As String
 On Error GoTo ErrHandler
     If receiptNum = "" Then Err.Raise -99999999, "POPBILL", "팩스접수번호(receiptNum)가 입력되지 않았습니다."
     
@@ -763,6 +765,8 @@ On Error GoTo ErrHandler
     If senderName <> "" Then Form.Add "sndnm", senderName
     
     If reserveDT <> "" Then Form.Add "sndDT", reserveDT
+    
+    If title <> "" Then Form.Add "title", title
     
     '수신정보 배열이 존재하는 경우
     If Not receivers Is Nothing Then
