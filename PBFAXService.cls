@@ -24,7 +24,7 @@ Option Explicit
 ' Author : Kim Seongjun (pallet027@gmail.com)
 ' Written : 2014-04-22
 ' Contributor : Jeong Yohan (code@linkhub.co.kr)
-' Updated : 2017-07-20
+' Updated : 2017-08-30
 '
 ' Thanks for your interest.
 '=================================================================================
@@ -566,6 +566,20 @@ ErrHandler:
     m_LastErrMessage = Err.Description
     Set GetCorpInfo = Nothing
 End Function
+
+'파트너 포인트 충전 URL - 2017/08/30 추가
+Public Function GetPartnerURL(CorpNum As String, TOGO As String) As String
+    On Error GoTo ErrHandler
+    
+    GetPartnerURL = m_Linkhub.GetPartnerURL(getSession_token(CorpNum), IIf(m_IsTest, ServiceID_TEST, ServiceID_REAL), TOGO)
+    
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.number
+    m_LastErrMessage = Err.Description
+    GetPartnerURL = m_LastErrCode
+End Function
+
 
 '회원잔액조회
 Public Function GetBalance(CorpNum As String) As Double
