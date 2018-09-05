@@ -13,8 +13,8 @@ Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Option Explicit
 
-Public ID               As String
-Public PWD              As String
+Public id               As String
+Public pwd              As String
 Public personName       As String
 Public tel              As String
 Public hp               As String
@@ -23,10 +23,12 @@ Public email            As String
 Public regDT            As String
 Public searchAllAllowYN As Boolean
 Public mgrYN            As Boolean
+Public state            As Integer
+
 
 Public Sub fromDictionary(dic As Variant)
-    ID = dic.Item("id")
-    PWD = dic.Item("pwd")
+    id = dic.Item("id")
+    pwd = dic.Item("pwd")
     personName = dic.Item("personName")
     tel = dic.Item("tel")
     hp = dic.Item("hp")
@@ -35,8 +37,8 @@ Public Sub fromDictionary(dic As Variant)
     regDT = dic.Item("regDT")
     searchAllAllowYN = CStr(dic.Item("searchAllAllowYN"))
     mgrYN = CStr(dic.Item("mgrYN"))
+    state = dic.Item("state")
 End Sub
-
 
 
 
