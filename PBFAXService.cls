@@ -119,10 +119,10 @@ Public Property Let IsTest(ByVal value As Boolean)
     m_IsTest = value
 End Property
 '초기화
-Public Sub Initialize(linkID As String, SecretKey As String)
+Public Sub Initialize(LinkID As String, SecretKey As String)
     Set m_Linkhub = New Linkhub
     
-    m_Linkhub.linkID = linkID
+    m_Linkhub.LinkID = LinkID
     m_Linkhub.SercetKey = SecretKey
     
     m_scope.Add "member"
@@ -620,11 +620,11 @@ ErrHandler:
     GetPopbillURL = ""
 End Function
 '회원가입 여부
-Public Function CheckIsMember(CorpNum As String, linkID As String) As PBResponse
+Public Function CheckIsMember(CorpNum As String, LinkID As String) As PBResponse
 On Error GoTo ErrHandler
     Dim result As Variant
     
-    Set result = httpGET("/Join?CorpNum=" + CorpNum + "&LID=" + linkID, "")
+    Set result = httpGET("/Join?CorpNum=" + CorpNum + "&LID=" + LinkID, "")
     
     Set CheckIsMember = New PBResponse
     CheckIsMember.code = result.Item("code")
@@ -645,7 +645,7 @@ On Error GoTo ErrHandler
     
     Set tmp = CreateObject("Scripting.Dictionary")
     
-    tmp.Add "LinkID", JoinInfo.linkID
+    tmp.Add "LinkID", JoinInfo.LinkID
     tmp.Add "CorpNum", JoinInfo.CorpNum
     tmp.Add "CorpName", JoinInfo.CorpName
     tmp.Add "CEOName", JoinInfo.CEOName
@@ -712,13 +712,13 @@ ErrHandler:
 
 End Function
 
-''팩스 전송
-Public Function SendFAX(CorpNum As String, sendNum As String, receivers As Collection, FilePaths As Collection, Optional reserveDT As String, Optional UserID As String, Optional senderName As String, Optional adsYN As Boolean = False, Optional title As String = "") As String
+'팩스 전송
+Public Function SendFAX(CorpNum As String, sendNum As String, receivers As Collection, FilePaths As Collection, Optional reserveDT As String, Optional UserID As String, Optional senderName As String, Optional adsYN As Boolean = False, Optional title As String = "", Optional requestNum As String = "") As String
 On Error GoTo ErrHandler
     
     If receivers Is Nothing Or receivers.Count = 0 Then Err.Raise -99999999, "POPBILL", "수신자정보 가 입력되지 않았습니다."
     If FilePaths Is Nothing Or FilePaths.Count = 0 Then Err.Raise -99999999, "POPBILL", "전송할 파일경로가 입력되지 않았습니다."
-    If FilePaths.Count > 5 Then Err.Raise -99999999, "POPBILL", "1회 전송 가능한 파일갯수는 5개입니다."
+    If FilePaths.Count > 20 Then Err.Raise -99999999, "POPBILL", "1회 전송 가능한 파일갯수는 20개입니다."
     
     Dim result As Variant
     Dim postdata As String
@@ -734,10 +734,9 @@ On Error GoTo ErrHandler
     
     If senderName <> "" Then Form.Add "sndnm", senderName
     If reserveDT <> "" Then Form.Add "sndDT", reserveDT
-    
     If title <> "" Then Form.Add "title", title
-    
-    
+    If requestNum <> "" Then Form.Add "requestNum", requestNum
+   
     Form.Add "fCnt", FilePaths.Count
     
     
@@ -762,7 +761,7 @@ ErrHandler:
 End Function
 
 '팩스 재전송
-Public Function ResendFAX(CorpNum As String, receiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "", Optional title As String = "") As String
+Public Function ResendFAX(CorpNum As String, receiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "", Optional title As String = "", Optional requestNum As String = "") As String
 On Error GoTo ErrHandler
     If receiptNum = "" Then Err.Raise -99999999, "POPBILL", "팩스접수번호(receiptNum)가 입력되지 않았습니다."
     
@@ -775,12 +774,10 @@ On Error GoTo ErrHandler
     Set Form = CreateObject("Scripting.Dictionary")
     
     If sendNum <> "" Then Form.Add "snd", sendNum
-    
     If senderName <> "" Then Form.Add "sndnm", senderName
-    
     If reserveDT <> "" Then Form.Add "sndDT", reserveDT
-    
     If title <> "" Then Form.Add "title", title
+    If requestNum <> "" Then Form.Add "requestNum", requestNum
     
     '수신정보 배열이 존재하는 경우
     If Not receivers Is Nothing Then
@@ -800,6 +797,46 @@ ErrHandler:
     m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
     ResendFAX = ""
+End Function
+
+
+'팩스 재전송(요청번호 할당)
+Public Function ResendFAXRN(CorpNum As String, OrgRequestNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "", Optional title As String = "", Optional requestNum As String = "") As String
+On Error GoTo ErrHandler
+    If OrgRequestNum = "" Then Err.Raise -99999999, "POPBILL", "원본팩스번호가 입력되지 않았습니다."
+    
+    Dim result As Variant
+    Dim postdata As String
+    Dim Form As Variant
+    Dim colRecevers As New Collection
+    Dim receiver As PBReceiver
+    
+    Set Form = CreateObject("Scripting.Dictionary")
+    
+    If sendNum <> "" Then Form.Add "snd", sendNum
+    If senderName <> "" Then Form.Add "sndnm", senderName
+    If reserveDT <> "" Then Form.Add "sndDT", reserveDT
+    If title <> "" Then Form.Add "title", title
+    If requestNum <> "" Then Form.Add "requestNum", requestNum
+    
+    '수신정보 배열이 존재하는 경우
+    If Not receivers Is Nothing Then
+        For Each receiver In receivers
+            colRecevers.Add receiver.toDictionary
+        Next
+        Form.Add "rcvs", colRecevers
+    End If
+    
+    postdata = m_Linkhub.toString(Form)
+    
+    Set result = httpPOST("/FAX/Resend/" & OrgRequestNum, getSession_token(CorpNum), postdata, UserID)
+    
+    ResendFAXRN = result.Item("receiptNum")
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.number
+    m_LastErrMessage = Err.Description
+    ResendFAXRN = ""
 End Function
 
 '전송내역 확인
@@ -833,6 +870,36 @@ ErrHandler:
 
 End Function
 
+'전송내역 확인 (요청번호 할당)
+Public Function GetMessagesRN(CorpNum As String, requestNum As String, Optional UserID As String = "") As Collection
+On Error GoTo ErrHandler
+    Dim result As Variant
+    If requestNum = "" Then
+        Err.Raise -99999999, "POPBILL", "요청번호가 입력되지 않았습니다."
+    End If
+    
+    Set result = httpGET("/FAX/Get/" & requestNum, getSession_token(CorpNum), UserID)
+    
+    Set GetMessagesRN = New Collection
+    
+    Dim T As Variant
+    Dim sentMsg As PBFaxInfo
+    
+    For Each T In result
+        Set sentMsg = New PBFaxInfo
+        
+        sentMsg.fromDictionary T
+        
+        GetMessagesRN.Add sentMsg
+    Next
+    
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.number
+    m_LastErrMessage = Err.Description
+    Set GetMessagesRN = Nothing
+
+End Function
 
 '예약전송 취소
 Public Function CancelReserve(CorpNum As String, receiptNum As String, Optional UserID As String = "") As PBResponse
@@ -856,6 +923,27 @@ ErrHandler:
 
 End Function
 
+'예약전송 취소 (요청번호 할당)
+Public Function CancelReserveRN(CorpNum As String, requestNum As String, Optional UserID As String = "") As PBResponse
+On Error GoTo ErrHandler
+    Dim result As Variant
+    If requestNum = "" Then
+        Err.Raise -99999999, "POPBILL", "요청번호가 입력되지 않았습니다."
+    End If
+    
+    Set result = httpGET("/FAX/Cancel/" & requestNum, getSession_token(CorpNum), UserID)
+    Set CancelReserveRN = New PBResponse
+    
+    CancelReserveRN.code = result.Item("code")
+    CancelReserveRN.message = result.Item("message")
+    
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.number
+    m_LastErrMessage = Err.Description
+    Set CancelReserveRN = Nothing
+
+End Function
 
 '팩스 관련 URL
 Public Function GetURL(CorpNum As String, UserID As String, TOGO As String) As String
