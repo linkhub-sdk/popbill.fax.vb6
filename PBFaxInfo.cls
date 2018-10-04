@@ -35,6 +35,8 @@ Public receiptDT As String
 Public sendDT As String
 Public resultDT As String
 Public sendResult As Integer
+Public receiptNum As String
+Public requestNum As String
 Public fileNames As Collection
 
 
@@ -59,6 +61,8 @@ Public Sub fromDictionary(dic As Variant)
     resultDT = dic.Item("resultDT")
     receiptDT = dic.Item("receiptDT")
     sendResult = dic.Item("sendResult")
+    receiptNum = dic.Item("receiptNum")
+    requestNum = dic.Item("requestNum")
     
     Dim tCollection As Collection
     
