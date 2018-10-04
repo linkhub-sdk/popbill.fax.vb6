@@ -37,6 +37,8 @@ Public resultDT As String
 Public sendResult As Integer
 Public receiptNum As String
 Public requestNum As String
+Public chargePageCnt As String
+Public tiffFileSize As String
 Public fileNames As Collection
 
 
@@ -63,6 +65,8 @@ Public Sub fromDictionary(dic As Variant)
     sendResult = dic.Item("sendResult")
     receiptNum = dic.Item("receiptNum")
     requestNum = dic.Item("requestNum")
+    chargePageCnt = dic.Item("chargePageCnt")
+    tiffFileSize = dic.Item("tiffFileSize")
     
     Dim tCollection As Collection
     
