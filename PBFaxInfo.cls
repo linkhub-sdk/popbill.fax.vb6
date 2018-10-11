@@ -37,7 +37,7 @@ Public resultDT As String
 Public sendResult As Integer
 Public receiptNum As String
 Public requestNum As String
-Public chargePageCnt As String
+Public chargePageCnt As Integer
 Public tiffFileSize As String
 Public fileNames As Collection
 
