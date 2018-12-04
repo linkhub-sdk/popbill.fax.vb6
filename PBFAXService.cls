@@ -809,9 +809,9 @@ ErrHandler:
 End Function
 
 '팩스 재전송
-Public Function ResendFAX(CorpNum As String, ReceiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "", Optional title As String = "", Optional requestNum As String = "") As String
+Public Function ResendFAX(CorpNum As String, receiptNum As String, sendNum As String, senderName As String, receivers As Collection, Optional reserveDT As String, Optional UserID As String = "", Optional title As String = "", Optional requestNum As String = "") As String
 On Error GoTo ErrHandler
-    If Not Len(ReceiptNum) = 18 Then
+    If Not Len(receiptNum) = 18 Then
         Err.Raise -99999999, "POPBILL", "팩스접수번호(receiptNum)가 올바르지 않습니다."
     End If
     
@@ -839,7 +839,7 @@ On Error GoTo ErrHandler
     
     postdata = m_Linkhub.toString(Form)
     
-    Set result = httpPOST("/FAX/" & ReceiptNum, getSession_token(CorpNum), postdata, UserID)
+    Set result = httpPOST("/FAX/" & receiptNum, getSession_token(CorpNum), postdata, UserID)
     
     ResendFAX = result.Item("receiptNum")
     Exit Function
@@ -890,15 +890,15 @@ ErrHandler:
 End Function
 
 '전송내역 확인
-Public Function GetMessages(CorpNum As String, ReceiptNum As String, Optional UserID As String = "") As Collection
+Public Function GetMessages(CorpNum As String, receiptNum As String, Optional UserID As String = "") As Collection
 On Error GoTo ErrHandler
-    If Not Len(ReceiptNum) = 18 Then
+    If Not Len(receiptNum) = 18 Then
         Err.Raise -99999999, "POPBILL", "팩스접수번호(receiptNum)가 올바르지 않습니다."
     End If
     
     Dim result As Variant
     
-    Set result = httpGET("/FAX/" & ReceiptNum, getSession_token(CorpNum), UserID)
+    Set result = httpGET("/FAX/" & receiptNum, getSession_token(CorpNum), UserID)
     
     Set GetMessages = New Collection
     
@@ -953,15 +953,15 @@ ErrHandler:
 End Function
 
 '예약전송 취소
-Public Function CancelReserve(CorpNum As String, ReceiptNum As String, Optional UserID As String = "") As PBResponse
+Public Function CancelReserve(CorpNum As String, receiptNum As String, Optional UserID As String = "") As PBResponse
 On Error GoTo ErrHandler
-    If Not Len(ReceiptNum) = 18 Then
+    If Not Len(receiptNum) = 18 Then
         Err.Raise -99999999, "POPBILL", "팩스접수번호(receiptNum)가 올바르지 않습니다."
     End If
     
     Dim result As Variant
     
-    Set result = httpGET("/FAX/" & ReceiptNum & "/Cancel", getSession_token(CorpNum), UserID)
+    Set result = httpGET("/FAX/" & receiptNum & "/Cancel", getSession_token(CorpNum), UserID)
     Set CancelReserve = New PBResponse
     
     CancelReserve.code = result.Item("code")
@@ -1124,22 +1124,22 @@ ErrHandler:
 End Function
 
 '팩스 미리보기 URL
-Public Function GetPreViewURL(CorpNum As String, ReceiptNum As String, UserID As String) As String
+Public Function GetPreviewURL(CorpNum As String, receiptNum As String, UserID As String) As String
 On Error GoTo ErrHandler
-    If Not Len(ReceiptNum) = 18 Then
+    If Not Len(receiptNum) = 18 Then
         Err.Raise -99999999, "POPBILL", "접수번호(receiptNum)가 올바르지 않습니다."
     End If
     
     Dim result As Variant
     
-    Set result = httpGET("/FAX/Preview/" + ReceiptNum, getSession_token(CorpNum), UserID)
+    Set result = httpGET("/FAX/Preview/" + receiptNum, getSession_token(CorpNum), UserID)
     
-    GetPreViewURL = result.Item("url")
+    GetPreviewURL = result.Item("url")
     Exit Function
 ErrHandler:
     m_LastErrCode = Err.number
     m_LastErrMessage = Err.Description
-    GetPreViewURL = ""
+    GetPreviewURL = ""
 End Function
 
 
