@@ -24,6 +24,7 @@ Public convState As Integer
 Public sendNum As String
 Public senderName As String
 Public receiveNum As String
+Public receiveNumType As String
 Public receiveName As String
 Public sendPageCnt As Integer
 Public successPageCnt As Integer
@@ -39,8 +40,6 @@ Public receiptNum As String
 Public requestNum As String
 Public chargePageCnt As Integer
 Public tiffFileSize As String
-Public iSuccessPageCnt As Integer
-Public receiveNumType As String
 Public fileNames As Collection
 
 
@@ -54,6 +53,7 @@ Public Sub fromDictionary(dic As Variant)
     sendNum = dic.Item("sendNum")
     senderName = dic.Item("senderName")
     receiveNum = dic.Item("receiveNum")
+    receiveNumType = dic.Item("receiveNumType")
     receiveName = dic.Item("receiveName")
     sendPageCnt = dic.Item("sendPageCnt")
     successPageCnt = dic.Item("successPageCnt")
@@ -69,8 +69,6 @@ Public Sub fromDictionary(dic As Variant)
     requestNum = dic.Item("requestNum")
     chargePageCnt = dic.Item("chargePageCnt")
     tiffFileSize = dic.Item("tiffFileSize")
-    iSuccessPageCnt = dic.Item("iSuccessPageCnt")
-    receiveNumType = dic.Item("receiveNumType")
     
     Dim tCollection As Collection
     

@@ -24,7 +24,7 @@ Option Explicit
 ' Author : Kim Seongjun (pallet027@gmail.com)
 ' Written : 2014-04-22
 ' Contributor : Jeong Yohan (code@linkhub.co.kr)
-' Updated : 2021-10-18
+' Updated : 2022-01-13
 '
 ' Thanks for your interest.
 '=================================================================================
@@ -605,11 +605,11 @@ On Error GoTo ErrHandler
     
     Set tmp = CreateObject("Scripting.Dictionary")
     
-    tmp.Add "ceoname", CorpInfo.ceoname
-    tmp.Add "corpName", CorpInfo.corpName
-    tmp.Add "addr", CorpInfo.addr
-    tmp.Add "bizType", CorpInfo.bizType
-    tmp.Add "bizClass", CorpInfo.bizClass
+    tmp.Add "ceoname", CorpInfo.CEOName
+    tmp.Add "corpName", CorpInfo.CorpName
+    tmp.Add "addr", CorpInfo.Addr
+    tmp.Add "bizType", CorpInfo.BizType
+    tmp.Add "bizClass", CorpInfo.BizClass
             
     postdata = m_Linkhub.toString(tmp)
     
@@ -792,12 +792,12 @@ On Error GoTo ErrHandler
     
     tmp.Add "LinkID", JoinInfo.linkID
     tmp.Add "CorpNum", JoinInfo.CorpNum
-    tmp.Add "CorpName", JoinInfo.corpName
-    tmp.Add "CEOName", JoinInfo.ceoname
-    tmp.Add "Addr", JoinInfo.addr
+    tmp.Add "CorpName", JoinInfo.CorpName
+    tmp.Add "CEOName", JoinInfo.CEOName
+    tmp.Add "Addr", JoinInfo.Addr
     tmp.Add "ZipCode", JoinInfo.ZipCode
-    tmp.Add "BizClass", JoinInfo.bizClass
-    tmp.Add "BizType", JoinInfo.bizType
+    tmp.Add "BizClass", JoinInfo.BizClass
+    tmp.Add "BizType", JoinInfo.BizType
     tmp.Add "ContactName", JoinInfo.ContactName
     tmp.Add "ContactEmail", JoinInfo.ContactEmail
     tmp.Add "ContactFAX", JoinInfo.ContactFAX
