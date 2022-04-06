@@ -1110,6 +1110,28 @@ ErrHandler:
     GetURL = ""
 End Function
 
+'발신번호 등록여부 확인
+Public Function CheckSenderNumber(CorpNum As String, SenderNumber As String, Optional UserID As String = "") As PBResponse
+On Error GoTo ErrHandler
+    Dim result As Variant
+    
+    If SenderNumber = "" Then
+        Err.Raise -99999999, "POPBILL", "발신번호가 입력되지 않았습니다."
+    End If
+
+    Set result = httpGET("/FAX/CheckSenderNumber/" + SenderNumber, getSession_token(CorpNum), UserID)
+    
+    Set CheckSenderNumber = New PBResponse
+    
+    CheckSenderNumber.code = result.Item("code")
+    CheckSenderNumber.message = result.Item("message")
+    Exit Function
+ErrHandler:
+    m_LastErrCode = Err.number
+    m_LastErrMessage = Err.Description
+    Set CheckSenderNumber = Nothing
+End Function
+
 '발신번호 관리 팝업 URL
 Public Function GetSenderNumberMgtURL(CorpNum As String, UserID As String) As String
 On Error GoTo ErrHandler
