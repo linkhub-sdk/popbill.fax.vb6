@@ -157,6 +157,7 @@ Public Sub Initialize(LinkID As String, SecretKey As String)
     m_scope.Add "member"
     ''팩스
     m_scope.Add "160"
+    m_scope.Add "161"
     
     m_IsTest = False
     m_IPRestrictOnOff = True
@@ -823,11 +824,17 @@ ErrHandler:
     m_LastErrMessage = Err.Description
 End Function
 '과금정보 조회
-Public Function GetChargeInfo(CorpNum As String, Optional UserID As String = "") As PBChargeInfo
+Public Function GetChargeInfo(CorpNum As String, Optional UserID As String = "", Optional ReceiveNumType As String = "") As PBChargeInfo
 On Error GoTo ErrHandler
     Dim result As Variant
+    Dim uri As String
+    
+    uri = "/FAX/ChargeInfo"
+    If Not ReceiveNumType = "" Then
+        uri = uri + "?receiveNumType=" + URLEncode(ReceiveNumType)
+    End If
        
-    Set result = httpGET("/FAX/ChargeInfo", getSession_token(CorpNum), UserID)
+    Set result = httpGET(uri, getSession_token(CorpNum), UserID)
     
     Set GetChargeInfo = New PBChargeInfo
         
@@ -843,11 +850,17 @@ End Function
 '''''''''''''''''''''''''' End Of PopbillBase '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''단가확인
-Public Function GetUnitCost(CorpNum As String) As Single
+Public Function GetUnitCost(CorpNum As String, Optional ReceiveNumType As String = "", Optional UserID As String = "") As Single
 On Error GoTo ErrHandler
     Dim result As Variant
+    Dim uri As String
     
-    Set result = httpGET("/FAX/UnitCost", getSession_token(CorpNum))
+    uri = "/FAX/UnitCost"
+    If Not ReceiveNumType = "" Then
+        uri = uri + "?receiveNumType=" + URLEncode(ReceiveNumType)
+    End If
+    
+    Set result = httpGET(uri, getSession_token(CorpNum), UserID)
     
     GetUnitCost = result.Item("unitCost")
     Exit Function
