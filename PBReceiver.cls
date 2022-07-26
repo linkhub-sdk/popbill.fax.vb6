@@ -16,6 +16,7 @@ Option Explicit
 
 Public receiverNum As String    '수신자 번호
 Public receiverName As String  '수신자 명칭
+Public interOPRefKey As String  '파트너 지정키
 
 
 Public Function toDictionary() As Variant
@@ -23,5 +24,6 @@ Public Function toDictionary() As Variant
     
     toDictionary.Add "rcv", receiverNum
     toDictionary.Add "rcvnm", receiverName
+    toDictionary.Add "interOPRefKey", interOPRefKey
     
 End Function

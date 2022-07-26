@@ -41,6 +41,7 @@ Public requestNum As String
 Public chargePageCnt As Integer
 Public tiffFileSize As String
 Public fileNames As Collection
+Public interOPRefKey As String
 
 
 Public Sub fromDictionary(dic As Variant)
@@ -69,6 +70,7 @@ Public Sub fromDictionary(dic As Variant)
     requestNum = dic.Item("requestNum")
     chargePageCnt = dic.Item("chargePageCnt")
     tiffFileSize = dic.Item("tiffFileSize")
+    interOPRefKey = dic.Item("interOPRefKey")
     
     Dim tCollection As Collection
     
