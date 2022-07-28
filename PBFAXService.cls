@@ -227,6 +227,7 @@ Private Function httpGET(URL As String, BearerToken As String, Optional UserID A
     Call winhttp1.setRequestHeader("Authorization", "Bearer " + BearerToken)
     Call winhttp1.setRequestHeader("x-pb-version", APIVersion)
     Call winhttp1.setRequestHeader("Accept-Encoding", "gzip,deflate")
+    Call winhttp1.setRequestHeader("User-Agent", "VB6 POPBiLL SDK")
     
     If UserID <> "" Then
         Call winhttp1.setRequestHeader("x-pb-userid", UserID)
@@ -269,6 +270,7 @@ Private Function httpPOST_override(URL As String, BearerToken As String, overrid
     Call winhttp1.Open("POST", getTargetURL() + URL, False)
     Call winhttp1.setRequestHeader("x-pb-version", APIVersion)
     Call winhttp1.setRequestHeader("Accept-Encoding", "gzip,deflate")
+    Call winhttp1.setRequestHeader("User-Agent", "VB6 POPBiLL SDK")
     
     If BearerToken <> "" Then
         Call winhttp1.setRequestHeader("Authorization", "Bearer " + BearerToken)
@@ -325,6 +327,7 @@ Private Function httpPOST_File(URL As String, BearerToken As String, postdata As
     Call winhttp1.Open("POST", getTargetURL() + URL, False)
     Call winhttp1.setRequestHeader("x-pb-version", APIVersion)
     Call winhttp1.setRequestHeader("Accept-Encoding", "gzip,deflate")
+    Call winhttp1.setRequestHeader("User-Agent", "VB6 POPBiLL SDK")
     
     
     If BearerToken <> "" Then
@@ -824,14 +827,14 @@ ErrHandler:
     m_LastErrMessage = Err.Description
 End Function
 '과금정보 조회
-Public Function GetChargeInfo(CorpNum As String, Optional UserID As String = "", Optional ReceiveNumType As String = "") As PBChargeInfo
+Public Function GetChargeInfo(CorpNum As String, Optional UserID As String = "", Optional receiveNumType As String = "") As PBChargeInfo
 On Error GoTo ErrHandler
     Dim result As Variant
     Dim uri As String
     
     uri = "/FAX/ChargeInfo"
-    If Not ReceiveNumType = "" Then
-        uri = uri + "?receiveNumType=" + URLEncode(ReceiveNumType)
+    If Not receiveNumType = "" Then
+        uri = uri + "?receiveNumType=" + URLEncode(receiveNumType)
     End If
        
     Set result = httpGET(uri, getSession_token(CorpNum), UserID)
@@ -850,14 +853,14 @@ End Function
 '''''''''''''''''''''''''' End Of PopbillBase '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
 ''단가확인
-Public Function GetUnitCost(CorpNum As String, Optional ReceiveNumType As String = "", Optional UserID As String = "") As Single
+Public Function GetUnitCost(CorpNum As String, Optional receiveNumType As String = "", Optional UserID As String = "") As Single
 On Error GoTo ErrHandler
     Dim result As Variant
     Dim uri As String
     
     uri = "/FAX/UnitCost"
-    If Not ReceiveNumType = "" Then
-        uri = uri + "?receiveNumType=" + URLEncode(ReceiveNumType)
+    If Not receiveNumType = "" Then
+        uri = uri + "?receiveNumType=" + URLEncode(receiveNumType)
     End If
     
     Set result = httpGET(uri, getSession_token(CorpNum), UserID)
